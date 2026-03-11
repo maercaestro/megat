@@ -1,0 +1,31 @@
+# ________________________________________________
+# requirements.txt — Megat GPT-2 355M (RunPod A40)
+#
+# Install on RunPod with:
+#   pip install -r requirements.txt
+#
+# Most of these come pre-installed on RunPod's PyTorch templates.
+# The critical ones to verify are torch (with CUDA) and flash-attn.
+# ________________________________________________
+
+# Deep learning core
+# torch 2.2+ is required for torch.compile stability and bfloat16 support.
+# When installing on RunPod, use the pre-installed version — don't upgrade
+# unless you know the CUDA driver version is compatible.
+torch>=2.2.0
+
+# Custom BPE tokenizer training and inference
+# Used in the Colab pre-tokenization step and loaded in train.py for sample generation.
+tokenizers>=0.15.0
+
+# Numerical arrays and memory-mapped binary file access
+# np.memmap is used by MemmapDataLoader to read pre-tokenized .bin files
+numpy>=1.24.0
+
+# Experiment tracking — streams loss curves and samples to wandb.ai dashboard.
+# Optional: train.py degrades gracefully to console logging if not installed.
+wandb>=0.16.0
+
+# Uploading/downloading data and checkpoints to HuggingFace Hub
+# Used in the Colab notebooks (Phase 0) and for pulling data on RunPod at startup.
+huggingface_hub>=0.20.0
