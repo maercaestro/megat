@@ -12,7 +12,7 @@
 # torch 2.2+ is required for torch.compile stability and bfloat16 support.
 # When installing on RunPod, use the pre-installed version — don't upgrade
 # unless you know the CUDA driver version is compatible.
-torch>=2.2.0
+torch>=2.6.0
 
 # Custom BPE tokenizer training and inference
 # Used in the Colab pre-tokenization step and loaded in train.py for sample generation.

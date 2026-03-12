@@ -252,7 +252,7 @@ def main():
 
     # ── Device setup ──────────────────────────────────────────────────────────
     assert torch.cuda.is_available(), (
-        "No CUDA GPU found. This script is designed for RunPod A40.\n"
+        "No CUDA GPU found. This script is designed for RunPod (A40 or RTX 5090).\n"
         "If testing locally on Mac, use train_megat.py (the CPU/MPS version)."
     )
     device = 'cuda'

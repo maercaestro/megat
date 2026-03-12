@@ -56,12 +56,12 @@ WARMUP_STEPS = 2000  # linearly ramp LR from 0 → MAX_LR over these first steps
                      # gradients that can permanently damage the early layers.
                      # Warmup gives the optimizer time to "get oriented" first.
 
-MAX_STEPS = 15000    # total optimizer steps.
-                     # At ~512K tokens/step → ~7.68B total tokens.
-                     # That's roughly 3–4 epochs over a 2B-token corpus.
-                     # The A40 does ~25K tokens/sec → each step takes ~20s
-                     # → 15000 steps × 20s = ~83 hours. Fits in our 72h budget
-                     # with some buffer (we may stop early at plateau).
+MAX_STEPS = 10000    # total optimizer steps.
+                     # At ~512K tokens/step → ~5.12B total tokens.
+                     # That's roughly 2.5 epochs over a 2B-token corpus.
+                     # The RTX 5090 does ~35–45K tokens/sec → each step takes ~12–15s
+                     # → 10000 steps × 13s ≈ 36 hours. Fits in the ~42h budget
+                     # (at $0.69/hr on RunPod) with buffer for setup and uploads.
 
 
 # ─── BATCH SIZE ───────────────────────────────────────────────────────────────
@@ -82,10 +82,13 @@ MAX_STEPS = 15000    # total optimizer steps.
 # MICRO_BATCH × SEQ_LEN × GRAD_ACCUM = TOTAL_BATCH
 #      8       ×  1024   ×     64     = 524,288  ✓
 
-MICRO_BATCH  = 8        # sequences per GPU forward pass (VRAM-limited)
+MICRO_BATCH  = 4        # sequences per GPU forward pass (VRAM-limited)
+                        # A40 (48GB) could fit 8; RTX 5090 (32GB) needs 4.
+                        # If you get an OOM, drop to 2. If VRAM headroom looks
+                        # comfortable after step 1, you can try bumping to 6.
 SEQ_LEN      = 1024     # tokens per sequence = the model's context window
 TOTAL_BATCH  = 524288   # target tokens per optimizer step (2^19 ≈ 512K)
-                        # GRAD_ACCUM = TOTAL_BATCH // (MICRO_BATCH × SEQ_LEN) = 64
+                        # GRAD_ACCUM = TOTAL_BATCH // (MICRO_BATCH × SEQ_LEN) = 128
 
 
 # ─── OPTIMIZER ────────────────────────────────────────────────────────────────
@@ -142,4 +145,4 @@ LOG_DIR        = "logs/"            # optional log files
 # If wandb is not installed, train.py degrades gracefully to console-only logging.
 
 WANDB_PROJECT  = "megat-gpt2"
-WANDB_RUN_NAME = "355m-malay-pretrain"
+WANDB_RUN_NAME = "355m-malay-pretrain-5090"
